@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 
 
-const fetchAPI = (url) => {
+const useAPI = (url) => {
     const [data, setData] = useState(null);
     const [isPending, setIsPending] = useState(true);
     const [error, setError] = useState(null);
@@ -15,4 +15,4 @@ const fetchAPI = (url) => {
     return {data, isPending, error};
 }
 
-export default fetchAPI;
+export default useAPI;

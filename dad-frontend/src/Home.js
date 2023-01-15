@@ -1,8 +1,8 @@
 import ItemsList from './ItemsList';
-import fetchAPI from './fetchAPI.js';
+import useAPI from './useAPI.js';
 
 const Home = () => {
-    const {data: items, isPending, error} = fetchAPI('http://localhost:8000/test');
+    const {data: items, isPending, error} = useAPI('http://localhost:8000/test');
 
     return ( 
         <div className="home">
