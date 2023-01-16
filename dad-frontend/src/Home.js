@@ -2,12 +2,12 @@ import ItemsList from './ItemsList';
 import useAPI from './useAPI.js';
 
 const Home = () => {
-    const {data: items, isPending, error} = useAPI('http://localhost:8000/test');
+    const {data: items, isLoading, error} = useAPI('http://localhost:8000/api/items/?format=json');
 
     return ( 
         <div className="home">
             {error && <div>{error}</div>}
-            {isPending && <div>Loading...</div>}
+            {isLoading && <div>Loading...</div>}
             <ItemsList items={items} />
         </div>
      );

@@ -3,16 +3,20 @@ import {useState, useEffect} from 'react';
 
 const useAPI = (url) => {
     const [data, setData] = useState(null);
-    const [isPending, setIsPending] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         fetch(url)
             .then(res => res.json())
-            .then(data => setData(data.data));
+            .then((data) => {
+                setError(data.error)
+                setData(data)
+                setIsLoading(false)
+            })
     }, [url])
 
-    return {data, isPending, error};
+    return {data, isLoading, error};
 }
 
 export default useAPI;
