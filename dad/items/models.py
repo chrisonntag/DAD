@@ -36,7 +36,7 @@ class Favorite(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
 
-class Likes(models.Model):
+class Like(models.Model):
     user = models.ForeignKey(User, related_name='likes', on_delete=models.CASCADE)
     item = models.ForeignKey(Item, related_name='likes', on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
