@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from .serializers import ExhibitionSerializer, MediaTypeSerializer, ItemSerializer, FavoriteSerializer, LikeSerializer, CommentSerializer
 from model_bakery import baker
 from model_bakery.random_gen import gen_email, gen_text, gen_image_field
+from datetime import datetime
 
 
 class ItemListAPIView(APIView):
@@ -51,7 +52,7 @@ class CommentAPIView(APIView):
             'item': item.id,
             'title': request.data.get('title'),
             'content': request.data.get('content'),
-            'date': request.data.get('date')
+            'date': datetime.now()
         }
 
         serializer = CommentSerializer(data=data)

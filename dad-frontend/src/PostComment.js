@@ -11,12 +11,11 @@ const PostComment = () => {
     const navigate = useNavigate();
 
     const postComment = (e) => {
-        e.preventDefault();
-        const comment = { commentTitle, commentContent };
+        const comment = { 'title': commentTitle, 'content': commentContent };
 
         setIsLoading(true);
 
-        fetch('http://localhost:8000/api/items/' + id + '/comment', {
+        fetch('http://localhost:8000/api/items/' + id + '/comment/', {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(comment)
