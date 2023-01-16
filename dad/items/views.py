@@ -7,7 +7,7 @@ from .models import Exhibition, MediaType, Item, Favorite, Like, Comment
 from django.contrib.auth.models import User
 from .serializers import ExhibitionSerializer, MediaTypeSerializer, ItemSerializer, FavoriteSerializer, LikeSerializer, CommentSerializer
 from model_bakery import baker
-from model_bakery.random_gen import gen_email, gen_text
+from model_bakery.random_gen import gen_email, gen_text, gen_image_field
 
 
 class ItemListAPIView(APIView):
@@ -102,7 +102,9 @@ class FillAPIView(APIView):
         User.objects.all().delete()
         Exhibition.objects.all().delete()
         MediaType.objects.all().delete()
-        Item.objects.all().delete()
+        items = Item.objects.all()
+        for item in items:
+            item.delete()
         Favorite.objects.all().delete()
         Comment.objects.all().delete()
 
@@ -110,10 +112,10 @@ class FillAPIView(APIView):
         user_el_recipe = baker.make_recipe('items.user_el')
         exhibition_recipe = baker.make_recipe('items.exhibition_artscape')
         media_recipe = baker.make_recipe('items.media_img')
-        item_fourtytwo_recipe = baker.make_recipe('items.item_fourtytwo', _quantity=6)
-        item_echoes_recipe = baker.make_recipe('items.item_echoes', _quantity=9)
+        item_fourtytwo_recipe = baker.make_recipe('items.item_fourtytwo', _create_files=True, digital_copy=gen_image_field, _quantity=6)
+        item_echoes_recipe = baker.make_recipe('items.item_echoes', _create_files=True, digital_copy=gen_image_field, _quantity=9)
         fav_recipe = baker.make_recipe('items.fav')
         comment_recipe = baker.make_recipe('items.comment_el', _quantity=12)
 
-        return Response({}, status=status.HTTP_200_OK)
+        return Response({'SUCCESS'}, status=status.HTTP_200_OK)
 

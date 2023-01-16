@@ -37,7 +37,6 @@ item_fourtytwo = Recipe(
         description='This thought-provoking video installation explores the significance and symbolism of the number 42. Through a series of mesmerizing projections and immersive soundscapes, viewers are transported on a journey that delves into the cultural, mathematical, and philosophical significance of this enigmatic number. From its appearance in science fiction literature to its role in mathematics and physics, the installation leads the audience to question the importance of 42 in our understanding of the world. With its striking visual and audio effects, this installation is not just a feast for the senses, but also a stimulating exploration of the mysteries of the universe. It\'s a must-see for any visitors of the ArtScape Festival who are seeking an intellectually stimulating and visually striking experience.',
         part_of=foreign_key(exhibition_artscape),
         type_of=foreign_key(media_img),
-        digital_copy='myimg.jpg'
 )
 
 
@@ -48,7 +47,6 @@ item_echoes = Recipe(
         part_of=foreign_key(exhibition_artscape),
         type_of=foreign_key(media_img),
         related_to=related(item_fourtytwo),
-        digital_copy='myimg_echoes.jpg'
 )
 
 fav = Recipe(

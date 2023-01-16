@@ -1,39 +1,49 @@
 version: '3.9'
 
+
 services:
   db:
     image: postgres:14-alpine
     ports:
       - '5432:5432'
-
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-
     volumes:
       - ./data/db:/var/lib/postgresql/data/
+    networks:
+      - database
 
   frontend:
     build: ./dad-frontend
     ports:
       - '3000:3000'
-
     volumes:
       - ./dad-frontend:/app/frontend
-
     depends_on:
       - backend
+    networks:
+      - main
 
   backend: 
     build: .
-    env_file: ./.env
-
+    env_file: .env
     ports:
       - '8000:8000'
-
     volumes:
       - ./dad:/app/backend
-
     depends_on:
       - db
+    links:
+      - db:db
+    networks:
+      - main
+      - database
+
+
+networks:
+  main:
+    driver: bridge
+  database:
+    driver: bridge
