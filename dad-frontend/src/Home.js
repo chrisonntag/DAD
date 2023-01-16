@@ -17,7 +17,7 @@ const Home = () => {
             {isLoading && <div>Loading...</div>}
             
             <button onClick={handleFavorites}>Show Favorites</button>
-            <ItemsList items={items} />
+            <ItemsList items={items.results} />
         </div>
      );
 }
