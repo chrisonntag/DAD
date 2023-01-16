@@ -28,9 +28,9 @@ const PostComment = () => {
     return (
         <>
             <form onSubmit={postComment}>
-                <label for='title'>Title: </label>
+                <label htmlFor='title'>Title: </label>
                 <input required name='title' type='text' value={commentTitle} onChange={(e) => setCommentTitle(e.target.value)} />
-                <label for='content'>Content: </label>
+                <label htmlFor='content'>Content: </label>
                 <textarea required value={commentContent} onChange={(e) => setCommentContent(e.target.value)}></textarea>
                 {!isLoading && <input type='submit' value='Post Comment'/>}
                 {isLoading && <input disabled type='submit' value='Post Comment'/>}

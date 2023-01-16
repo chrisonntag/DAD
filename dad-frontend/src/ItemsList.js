@@ -13,7 +13,6 @@ export default class ItemsList extends Component {
     renderItems(items) {
         if (items != null && items.length > 0) {
             return items.map((item, index) => (
-                <>
                 <div key={item.id}>
                     <Link to={`/item/${item.id}`}>
                         <h2>{item.name}</h2>
@@ -21,7 +20,6 @@ export default class ItemsList extends Component {
                     </Link>
                     <p>{item.description}</p>
                 </div>
-                </>
             ))
         } else {
             return []
