@@ -1,6 +1,21 @@
+import os
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.conf import settings
+
+
+@receiver(post_delete)
+def remove_files_on_delete(sender, instance, **kwargs):
+    for field in sender._meta.concrete_fields:
+        if isinstance(field, models.FileField):
+            # Perform only on FileFields
+            file_field = getattr(instance, field.name)
+            dynamic_field = {field.name: file_field.name}
+            if not sender.objects.filter(**dynamic_field).exclude(pk=instance.pk).exists():
+                file_field.delete(False)
 
 
 class Exhibition(models.Model):
