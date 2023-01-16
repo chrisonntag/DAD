@@ -15,7 +15,10 @@ export default class ItemsList extends Component {
             return items.map((item, index) => (
                 <>
                 <div key={item.id}>
-                    <h2>{item.name}</h2>
+                    <Link to={`/item/${item.id}`}>
+                        <h2>{item.name}</h2>
+                        <img src={`https://picsum.photos/400?grayscale&random=${item.id}`} />
+                    </Link>
                     <p>{item.description}</p>
                 </div>
                 </>
