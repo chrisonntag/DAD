@@ -65,6 +65,14 @@ comment_el = Recipe(
         date=datetime.now()
 )
 
+comment_ad = Recipe(
+        Comment, 
+        user=foreign_key(user_ad),
+        item=foreign_key(item_fourtytwo),
+        title='Wonderful!',
+        content='I am literally speechless. Thank you!',
+        date=datetime.now()
+)
 
 
 

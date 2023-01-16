@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
@@ -9,13 +10,33 @@ from .serializers import ExhibitionSerializer, MediaTypeSerializer, ItemSerializ
 from model_bakery import baker
 from model_bakery.random_gen import gen_email, gen_text, gen_image_field
 from datetime import datetime
+from django.db.models import Count
 
 
-class ItemListAPIView(APIView):
-    def get(self, request, *args, **kwargs):
-        items = Item.objects.all()
-        serializer = ItemSerializer(items, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+class ItemListAPIView(generics.ListAPIView):
+    serializer_class = ItemSerializer
+
+    def get_queryset(self):
+        queryset = Item.objects.all()
+
+        # Shows top N items of a specific exhibition sorted by the number of comments per item, compare M1.
+        famous = self.request.query_params.get('famous')
+        exhibition_name = self.request.query_params.get('exhibition')
+
+        if exhibition_name is not None:
+            exhibition_queryset = Exhibition.objects.filter(name=exhibition_name).first()
+            queryset = queryset.filter(part_of=exhibition_queryset)
+
+        if famous is not None:
+            try:
+                famous = int(famous)
+            except ValueError:
+                return Response({'error': 'GET parameter famous must be a number'}, status=status.HTTP_400_BAD_REQUEST)
+
+            famous_comments_queryset = Comment.objects.values('item').annotate(comments_count=Count('item')).order_by('-comments_count').values('item')
+            queryset = queryset.filter(pk__in=famous_comments_queryset)[:famous]
+
+        return queryset
 
 
 class ItemDetailAPIView(APIView):
@@ -111,12 +132,14 @@ class FillAPIView(APIView):
 
         user_ad_recipe = baker.make_recipe('items.user_ad')
         user_el_recipe = baker.make_recipe('items.user_el')
-        exhibition_recipe = baker.make_recipe('items.exhibition_artscape')
+        exhibition_recipe = baker.make_recipe('items.exhibition_artscape', _quantity=1)
         media_recipe = baker.make_recipe('items.media_img')
         item_fourtytwo_recipe = baker.make_recipe('items.item_fourtytwo', _create_files=True, digital_copy=gen_image_field, _quantity=6)
         item_echoes_recipe = baker.make_recipe('items.item_echoes', _create_files=True, digital_copy=gen_image_field, _quantity=9)
         fav_recipe = baker.make_recipe('items.fav')
         comment_recipe = baker.make_recipe('items.comment_el', _quantity=12)
+        comment_ad_recipe = baker.make_recipe('items.comment_ad', _quantity=3)
 
         return Response({'SUCCESS'}, status=status.HTTP_200_OK)
+
 
