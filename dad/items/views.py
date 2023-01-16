@@ -13,10 +13,8 @@ from datetime import datetime
 from django.db.models import Count
 
 
-class ItemListAPIView(generics.ListAPIView):
-    serializer_class = ItemSerializer
-
-    def get_queryset(self):
+class ItemListAPIView(APIView):
+    def get(self, request, *args, **kwargs):
         queryset = Item.objects.all()
 
         # Shows top N items of a specific exhibition sorted by the number of comments per item, compare M1.
@@ -36,7 +34,9 @@ class ItemListAPIView(generics.ListAPIView):
             famous_comments_queryset = Comment.objects.values('item').annotate(comments_count=Count('item')).order_by('-comments_count').values('item')
             queryset = queryset.filter(pk__in=famous_comments_queryset)[:famous]
 
-        return queryset
+        serializer = ItemSerializer(queryset, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ItemDetailAPIView(APIView):

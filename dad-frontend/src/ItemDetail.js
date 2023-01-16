@@ -5,8 +5,8 @@ import PostComment from './PostComment.js';
 
 const ItemDetail = () => {
     const { id } = useParams();
-    const { data: item, isLoading, error } = useAPI('http://localhost:8000/api/items/' + id + '?format=json');
-    const { data: comments, commentsLoading, commentsError } = useAPI('http://localhost:8000/api/items/' + id + '/comment?format=json');
+    const { data: item, isLoading, error } = useAPI('http://localhost:8000/api/items/' + id + '/');
+    const { data: comments, commentsLoading, commentsError } = useAPI('http://localhost:8000/api/items/' + id + '/comment/');
     const navigate = useNavigate();
 
     return (

@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 WORKDIR /app/backend
 
-COPY requirements.txt /app/backend/
+COPY ./requirements.txt /app/backend/requirements.txt
 
 # Build psycopg2-binary from source -- add required required dependencies
 RUN apk add --virtual .build-deps --no-cache postgresql-dev gcc python3-dev musl-dev && \
