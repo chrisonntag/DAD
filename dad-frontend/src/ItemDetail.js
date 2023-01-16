@@ -9,21 +9,6 @@ const ItemDetail = () => {
     const { data: comments, commentsLoading, commentsError } = useAPI('http://localhost:8000/api/items/' + id + '/comment?format=json');
     const navigate = useNavigate();
 
-
-    function renderComments(comments) {
-        if (comments != null && comments.length > 0) {
-            comments.map((comment, index) => (
-                <>
-                <div className={`comment-${comment.id}`}>
-                    <h3>{comment.title}</h3>
-                    <h4>by {comment.user} on {comment.date}</h4>
-                    <p>{comment.content}</p>
-                </div>
-                </>
-            ))
-        }
-    }
-
     return (
         <div className='item'>
             {isLoading && <div>Loading ...</div>}
@@ -41,13 +26,11 @@ const ItemDetail = () => {
                 <h2>Comments</h2>
                 <PostComment />
                 {comments != null && comments.length > 0 && comments.map((comment, index) => (
-                    <>
-                    <div className={`comment-${comment.id}`}>
+                    <div key={comment.id} className={`comment-${comment.id}`}>
                         <h3>{comment.title}</h3>
                         <h4>by {comment.user} on {comment.date}</h4>
                         <p>{comment.content}</p>
                     </div>
-                    </>
                 ))}
             </section>
             }
