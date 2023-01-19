@@ -7,7 +7,13 @@ const useAPI = (url) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch(url)
+        fetch(url, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('authTokens'))['access']
+            }
+        })
             .then(res => res.json())
             .then((data) => {
                 setError(data.error)

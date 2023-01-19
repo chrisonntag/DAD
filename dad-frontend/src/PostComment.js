@@ -1,4 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import AuthContext from './context/AuthContext';
 import React, { useState } from "react";
 import useAPI from './useAPI';
 
@@ -9,6 +11,8 @@ const PostComment = () => {
     const [commentContent, setCommentContent] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
+
 
     const postComment = (e) => {
         const comment = { 'title': commentTitle, 'content': commentContent };
@@ -17,16 +21,20 @@ const PostComment = () => {
 
         fetch('http://localhost:8000/api/items/' + id + '/comment/', {
             method: 'POST',
-            headers: {"Content-Type": "application/json"},
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('authTokens'))['access']
+            },
             body: JSON.stringify(comment)
         }).then(() => {
             setIsLoading(false);
-            navigate.push('/item/' + id);
+            navigate('/item/' + id);
         })
     }
 
     return (
         <>
+            Logged in as {user.username}
             <form onSubmit={postComment}>
                 <label htmlFor='title'>Title: </label>
                 <input required name='title' type='text' value={commentTitle} onChange={(e) => setCommentTitle(e.target.value)} />

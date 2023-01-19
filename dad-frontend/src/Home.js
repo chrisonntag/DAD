@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 const Home = () => {
     const [isOnlyFavorites, setOnlyFavorites] = useState(false);
-    const {data: items, isLoading, error} = useAPI(isOnlyFavorites ? 'http://localhost:8000/api/items/favorites/': 'http://localhost:8000/api/items/');
+    const {data: items, isLoading, error} = useAPI(isOnlyFavorites ? 'http://localhost:8000/api/items/favorite/': 'http://localhost:8000/api/items/');
 
     const handleFavorites = () => {
         setOnlyFavorites(!isOnlyFavorites)
@@ -16,8 +16,8 @@ const Home = () => {
             {error && <div>{error}</div>}
             {isLoading && <div>Loading...</div>}
             
-            <button onClick={handleFavorites}>Show Favorites</button>
-            <ItemsList items={items.results} />
+            <button onClick={handleFavorites}>{isOnlyFavorites ? 'Hide' : 'Show'} Favorites</button>
+            <ItemsList items={items} />
         </div>
      );
 }

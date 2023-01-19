@@ -6,17 +6,17 @@ from rest_framework import status
 from rest_framework import permissions
 from .models import Exhibition, MediaType, Item, Favorite, Like, Comment
 from django.contrib.auth.models import User
-from .serializers import ExhibitionSerializer, MediaTypeSerializer, ItemSerializer, FavoriteSerializer, LikeSerializer, CommentSerializer
+from .serializers import ExhibitionSerializer, MediaTypeSerializer, ItemSerializer, FavoriteSerializer, LikeSerializer, CommentSerializer, FullCommentSerializer
+from users.serializers import UserSerializer
 from model_bakery import baker
 from model_bakery.random_gen import gen_email, gen_text, gen_image_field
 from datetime import datetime
 from django.db.models import Count
+from rest_framework_simplejwt import authentication
 
 
-class ItemListAPIView(generics.ListAPIView):
-    serializer_class = ItemSerializer
-
-    def get_queryset(self):
+class ItemListAPIView(APIView):
+    def get(self, request, *args, **kwargs):
         queryset = Item.objects.all()
 
         # Shows top N items of a specific exhibition sorted by the number of comments per item, compare M1.
@@ -24,8 +24,7 @@ class ItemListAPIView(generics.ListAPIView):
         exhibition_name = self.request.query_params.get('exhibition')
 
         if exhibition_name is not None:
-            exhibition_queryset = Exhibition.objects.filter(name=exhibition_name).first()
-            queryset = queryset.filter(part_of=exhibition_queryset)
+            queryset = queryset.filter(part_of__name=exhibition_name)
 
         if famous is not None:
             try:
@@ -36,7 +35,9 @@ class ItemListAPIView(generics.ListAPIView):
             famous_comments_queryset = Comment.objects.values('item').annotate(comments_count=Count('item')).order_by('-comments_count').values('item')
             queryset = queryset.filter(pk__in=famous_comments_queryset)[:famous]
 
-        return queryset
+        serializer = ItemSerializer(queryset, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ItemDetailAPIView(APIView):
@@ -58,18 +59,22 @@ class CommentAPIView(APIView):
             return Response({'error': 'Item not found'}, status=status.HTTP_404_NOT_FOUND)
 
         comments = Comment.objects.filter(item=item)
-        serializer = CommentSerializer(comments, many=True)
+        serializer = FullCommentSerializer(comments, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, pk, *args, **kwargs):
+        username = authentication.JWTAuthentication().authenticate(request)[0]
+        user = User.objects.filter(username=username).first()
         item = Item.objects.filter(pk=pk).first()
+
+        print(user)
 
         if item is None:
             return Response({'error': 'Item not found'}, status=status.HTTP_404_NOT_FOUND)
 
         data = {
-            'user': request.user.id,
+            'user': user.id,
             'item': item.id,
             'title': request.data.get('title'),
             'content': request.data.get('content'),
@@ -77,6 +82,8 @@ class CommentAPIView(APIView):
         }
 
         serializer = CommentSerializer(data=data)
+
+        print(serializer.initial_data)
 
         if serializer.is_valid():
             serializer.save()
@@ -87,7 +94,8 @@ class CommentAPIView(APIView):
 
 class FavoriteAPIView(APIView):
     def get(self, request, *args, **kwargs):
-        user = User.objects.filter(pk=request.user.id).first()
+        username = authentication.JWTAuthentication().authenticate(request)[0]
+        user = User.objects.filter(username=username).first()
 
         if user is None:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -98,16 +106,18 @@ class FavoriteAPIView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request, *args, **kwargs):
-        item = Item.objects.filter(pk=request.data.get('pk')).first()
+    def post(self, request, pk, *args, **kwargs):
+        username = authentication.JWTAuthentication().authenticate(request)[0]
+        user = User.objects.filter(username=username).first()
+        item = Item.objects.filter(pk=pk).first()
 
         if item is None:
             return Response({'error': 'Item not found'}, status=status.HTTP_404_NOT_FOUND)
 
         data = {
-            'user': request.user.id,
+            'user': user.id,
             'item': item.id,
-            'date': request.data.get('date')
+            'date': datetime.now()
         }
 
         serializer = FavoriteSerializer(data=data)
