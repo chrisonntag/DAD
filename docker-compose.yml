@@ -17,10 +17,12 @@ services:
 
   frontend:
     build: ./dad-frontend
+    command: npm start
     ports:
       - '3000:3000'
     volumes:
       - ./dad-frontend:/app/frontend
+      - /app/frontend/node_modules
     depends_on:
       - backend
     networks:
@@ -29,6 +31,7 @@ services:
   backend: 
     build: .
     env_file: .env
+    command: python manage.py runserver 0.0.0.0:8000
     ports:
       - '8000:8000'
     volumes:

@@ -19,5 +19,3 @@ and start containers with
 docker-compose up
 ```
 
-## 
-TODO: Use settings from envfile in Django settings as well. 

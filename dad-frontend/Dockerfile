@@ -1,10 +1,12 @@
-FROM node:16-alpine
+FROM node:16-alpine as builder
 
-WORKDIR /app/frontend/
+WORKDIR /app/frontend
 
-COPY package.json /app/frontend/package.json
+ENV PATH /app/frontend/node_modules/.bin:$PATH
+
+COPY ./package.json /app/frontend/package.json
 RUN npm install
 
-COPY . /app/frontend/
+COPY . /app/frontend
 
-CMD ["npm", "start"]
+RUN npm run build
