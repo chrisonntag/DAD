@@ -23,17 +23,18 @@ class ItemListAPIView(APIView):
         famous = self.request.query_params.get('famous')
         exhibition_name = self.request.query_params.get('exhibition')
 
-        if exhibition_name is not None:
-            queryset = queryset.filter(part_of__name=exhibition_name)
-
         if famous is not None:
             try:
                 famous = int(famous)
             except ValueError:
                 return Response({'error': 'GET parameter famous must be a number'}, status=status.HTTP_400_BAD_REQUEST)
-
+            
             famous_comments_queryset = Comment.objects.values('item').annotate(comments_count=Count('item')).order_by('-comments_count').values('item')
-            queryset = queryset.filter(pk__in=famous_comments_queryset)[:famous]
+
+            if exhibition_name is not None:
+                queryset = queryset.filter(pk__in=famous_comments_queryset, part_of__name=exhibition_name)[:famous]
+            else:
+                queryset = queryset.filter(pk__in=famous_comments_queryset)[:famous]
 
         serializer = ItemSerializer(queryset, many=True)
 

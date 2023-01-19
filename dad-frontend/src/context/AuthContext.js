@@ -1,22 +1,22 @@
-import { createContext, useState, useEffect } from "react";
+import {createContext, useEffect, useState} from "react";
 import jwt_decode from "jwt-decode";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 
 export const AuthContext = createContext("");
 export default AuthContext;
 
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({children}) => {
   const [authTokens, setAuthTokens] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? JSON.parse(localStorage.getItem("authTokens"))
-      : null
+      localStorage.getItem("authTokens")
+          ? JSON.parse(localStorage.getItem("authTokens"))
+          : null
   );
   const [user, setUser] = useState(() =>
-    localStorage.getItem("authTokens")
-      ? jwt_decode(localStorage.getItem("authTokens"))
-      : null
+      localStorage.getItem("authTokens")
+          ? jwt_decode(localStorage.getItem("authTokens"))
+          : null
   );
   const [loading, setLoading] = useState(true);
 
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
       alert("Something went wrong!");
     }
   };
- 
+
   const registerUser = async (username, password, password2) => {
     const response = await fetch("http://localhost:8000/api/users/register/", {
       method: "POST",
@@ -54,7 +54,6 @@ export const AuthProvider = ({ children }) => {
       body: JSON.stringify({
         username,
         password,
-        password2
       })
     });
     if (response.status === 201) {
@@ -89,9 +88,9 @@ export const AuthProvider = ({ children }) => {
   }, [authTokens, loading]);
 
   return (
-    <AuthContext.Provider value={contextData}>
-      {loading ? null : children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={contextData}>
+        {loading ? null : children}
+      </AuthContext.Provider>
   );
 };
 
