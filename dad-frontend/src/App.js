@@ -21,7 +21,7 @@ function App() {
                 </Routes>
             </section>
             </div>
-      </AuthProvider>
+        </AuthProvider>
       </Router>
     );
 }
