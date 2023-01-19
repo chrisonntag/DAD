@@ -11,6 +11,18 @@ const ItemDetail = () => {
     const { data: comments, commentsLoading, commentsError } = useAPI('http://localhost:8000/api/items/' + id + '/comment/');
     const { user } = useContext(AuthContext);
 
+    const markFavorite = (e) => {
+        fetch('http://localhost:8000/api/items/' + id + '/favorite/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('authTokens'))['access']
+            },
+            body: JSON.stringify({})
+        }).then(() => {
+            console.log("Marked as favorite")
+        })
+    }
 
     return (
         <div className='item'>
@@ -20,6 +32,7 @@ const ItemDetail = () => {
             <>
             <section className='item-detail'>
                 <h1>{item.name}</h1>
+                <button onClick={markFavorite}>Favorite</button>
                 <img src={`https://picsum.photos/400?grayscale&random=${item.id}`} />
                 <p>{item.description}</p>
             </section>

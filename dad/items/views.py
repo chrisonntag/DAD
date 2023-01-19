@@ -117,7 +117,7 @@ class FavoriteAPIView(APIView):
         data = {
             'user': user.id,
             'item': item.id,
-            'date': request.data.get('date')
+            'date': datetime.now()
         }
 
         serializer = FavoriteSerializer(data=data)
