@@ -11,6 +11,7 @@ from model_bakery import baker
 from model_bakery.random_gen import gen_email, gen_text, gen_image_field
 from datetime import datetime
 from django.db.models import Count
+from rest_framework_simplejwt import authentication
 
 
 class ItemListAPIView(APIView):
@@ -22,8 +23,7 @@ class ItemListAPIView(APIView):
         exhibition_name = self.request.query_params.get('exhibition')
 
         if exhibition_name is not None:
-            exhibition_queryset = Exhibition.objects.filter(name=exhibition_name).first()
-            queryset = queryset.filter(part_of=exhibition_queryset)
+            queryset = queryset.filter(part_of__name=exhibition_name)
 
         if famous is not None:
             try:
@@ -64,6 +64,7 @@ class CommentAPIView(APIView):
 
     def post(self, request, pk, *args, **kwargs):
         item = Item.objects.filter(pk=pk).first()
+        print(request.POST.get('title'))
 
         if item is None:
             return Response({'error': 'Item not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -99,6 +100,9 @@ class FavoriteAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
+        request.user = authentication.JWTAuthentication().authenticate(request)[0]
+
+        print(request.user)
         item = Item.objects.filter(pk=request.data.get('pk')).first()
 
         if item is None:
