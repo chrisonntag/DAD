@@ -23,12 +23,7 @@ from items import urls as items_urls
 
 
 urlpatterns = [
-    path('login/', auth_views.LoginView.as_view(), name="login"),
-    path('admin/login/', auth_views.LoginView.as_view(), name="login"),
-    path('logout/', auth_views.LogoutView.as_view(), name="logout"),
     path('admin/', admin.site.urls),
-    path('test/', views.send_some_data),
-    path('accounts/login/', admin.site.login),  # used for making permission_required decorator work
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/users/', include(users_urls)),
     path('api/items/', include(items_urls)),

@@ -1,5 +1,6 @@
 .env
 data/
+dad/digital_copies/
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,virtualenv,django,macos,node,react
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,virtualenv,django,macos,node,react
