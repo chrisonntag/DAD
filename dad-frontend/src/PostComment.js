@@ -21,7 +21,10 @@ const PostComment = () => {
 
         fetch('http://localhost:8000/api/items/' + id + '/comment/', {
             method: 'POST',
-            headers: {"Content-Type": "application/json"},
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('authTokens'))['access']
+            },
             body: JSON.stringify(comment)
         }).then(() => {
             setIsLoading(false);

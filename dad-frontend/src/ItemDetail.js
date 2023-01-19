@@ -31,7 +31,7 @@ const ItemDetail = () => {
                 {comments != null && comments.length > 0 && comments.map((comment, index) => (
                     <div key={comment.id} className={`comment-${comment.id}`}>
                         <h3>{comment.title}</h3>
-                        <h4>by {comment.user} on {comment.date}</h4>
+                        <h4>{comment.user.username} on {new Date(comment.date).toLocaleDateString("en-US")}</h4>
                         <p>{comment.content}</p>
                     </div>
                 ))}
